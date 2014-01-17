@@ -1,0 +1,23 @@
+<p>
+	<%= f.label :question_type, 'Type of Question' %><br/>
+	<%= f.select :question_type, options_for_select([['Text', 'Text'], ['Radio', 'Radio'], ['Checkbox', 'Checkbox']], selected: f.object.question_type) %>
+</p>
+
+<p>
+	<%= f.label :question, "Question" %><br/>
+	<%= f.text_area :question, rows: 3 %><br/>
+	<%= f.label :matrix, "Matrix?" %>
+	<%= f.check_box :matrix %> <br/>
+	<%= f.link_to_remove "Delete" %>
+</p>
+<p>
+	<ul>
+ 		<%= f.fields_for :qoptions do |builder| %>
+	    	<%= render "qoption_fields", f: builder %>
+	  	<% end %>
+  		<li>
+  			<%= f.link_to_add "Add an option", :qoptions %>
+  		</li>
+	</ul>
+</p>
+

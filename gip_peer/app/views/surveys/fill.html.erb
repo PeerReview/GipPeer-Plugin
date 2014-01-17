@@ -1,0 +1,114 @@
+<% content_for :header_tags do %>
+<%= javascript_include_tag 'sisyphus.min.js', plugin: 'gip_peer' %>
+<%= javascript_include_tag 'jquery.validate.min.js', plugin: 'gip_peer' %>
+<%= javascript_include_tag 'save.js', plugin: 'gip_peer' %>
+<% end %>
+<%= render "shared/error_messages", target: @survey %>
+<h2><%= @survey.title %> </h2>
+<% if @survey.published && @survey.start_date <= Date.current %>
+	<p>
+		<%= @survey.introduction %>
+	</p>
+	<%= nested_form_for @survey, url: fill_survey_path(@survey, project_id: @project) do |f| %>	
+		<% @survey.questions.each do |question| %>
+			<%= f.fields_for :questions, question do |g| %>
+				<p>
+					<% if question.matrix %>
+						<% @peers.each do |peer| %>
+							<%= question.question %>: <strong><%= peer.user.firstname%> <%= peer.user.lastname%></strong><br/>
+							<%= g.fields_for :answers,  question.answers.build do |h| %>
+								<%= h.hidden_field :peer_id, :value => peer.user.id %>
+								<%= h.hidden_field :project_id, :value => @project.id %>
+								<% if question.question_type == "Text" %>
+									<%= h.text_field :answer, required: true %>
+								<% elsif question.question_type == "Radio" %>
+									<table>
+										<tr>
+											<% question.qoptions.each do |qo| %>	
+												<td>
+													<%= h.label qo.option %> 
+												</td>
+											<% end %>
+										</tr>
+										<tr>
+											<% question.qoptions.each do |qo| %>	
+													<td>
+														<%= h.radio_button :answer, qo.option %>
+													</td>
+											<% end %>
+										</tr>
+									</table>
+								<% elsif question.question_type == "Checkbox" %>
+									<table>
+										<% question.qoptions.each do |qo| %>
+											<tr>
+												<td>
+													<%= h.label qo.option %>
+												</td>
+												<td>
+													<%= h.check_box :answer, {multiple: true}, qo.option, nil %>
+												</td>
+											</tr>
+										<% end %>
+									</table>
+								<% end %>
+							<% end %>
+						<% end %>
+						<% elsif %>
+							<%= question.question %>:<br/>
+							<%= g.fields_for :answers,  question.answers.build do |h| %>
+							<%= h.hidden_field :project_id, :value => @project.id %>
+							<% if question.question_type == "Text" %>
+								<%= h.text_field :answer, required: true %>
+							<% elsif question.question_type == "Radio" %>
+								<table>
+									<tr>
+										<% question.qoptions.each do |qo| %>	
+											<td>
+												<%= h.label qo.option %> 
+											</td>
+										<% end %>
+									</tr>
+									<tr>
+										<% question.qoptions.each do |qo| %>	
+												<td>
+													<%= h.radio_button :answer, qo.option %>
+												</td>
+										<% end %>
+									</tr>
+								</table>
+							<% elsif question.question_type == "Checkbox" %>
+								<table>
+									<% question.qoptions.each do |qo| %>
+										<tr>
+											<td>
+												<%= h.label qo.option %>
+											</td>
+											<td>
+												<%= h.check_box :answer, {multiple: true}, qo.option, nil %>
+											</td>
+										</tr>
+									<% end %>
+								</table>
+							<% end %>
+						<% end %>
+					<% end %>
+				</p>
+			<% end %>
+		<% end %>
+
+		<p>
+			<%= @survey.outroduction %>
+		</p>
+		<p>
+			<%= f.submit "Save" %>
+		</p>
+	<% end %>
+	<%= javascript_include_tag 'validate.js', plugin: 'gip_peer' %>
+	<%= link_to 'Back', surveys_path(project_id: @project) %>
+<% else %>
+<p>
+	<%= "Survey is not published or the start date didn't come yet." %>
+</p>
+<%= link_to 'Back', surveys_path(:project_id => @project) %>
+<% end %>

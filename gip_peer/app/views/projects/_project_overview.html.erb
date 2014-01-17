@@ -1,0 +1,26 @@
+<% availableSurveys = Peer.all(:joins => :survey, 
+	:conditions=>{:surveys => {:archive => false, :published => true},
+				  :peers   => {:project_id => @project, :user_id=> User.current, :completed => false}})%>
+<% if availableSurveys.any? %>
+ <table class="list attributes">
+ 	<thead>
+ 	 	 <tr>
+ 	 	 	 <th class="caption"><h3><i class="icon icon-report"></i>Survey Notification</h3></th>
+ 	 	 </tr>
+ 	 	 <tr>
+ 	 	 	<td>
+ 	 	 		<p>You have <%= availableSurveys.count %> open survey<% if availableSurveys.count > 1%>s<% end %>. Click below on the survey to fill it in!</p>
+ 	 	 	</td>
+ 	 	 </tr>
+ 	 </thead>
+ 	 
+ 	 <tbody>
+		<% for survey in availableSurveys %>
+ 	 	 	 <tr id="survey-<%= h(survey.id) %>" class="hascontextmenu <%= cycle('odd', 'even')%>">
+ 	 	 	 	<td><%= link_to survey.survey.title, fill_survey_path(survey.survey, project_id: @project) %></td>
+ 	 	 	 </tr>
+ 	 	 <% end %>
+ 	 </tbody>
+ </table>
+
+<% end %>

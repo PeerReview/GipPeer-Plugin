@@ -1,0 +1,43 @@
+<h2>All surveys</h2>
+<% if @otherSurveys && @otherSurveys.any? %>
+<div class="flash warning" id="flash_warning">
+	Warning there are also surveys open in other projects!<br/>
+	<% for survey in @otherSurveys %>
+		<%= survey.survey.title %> in <%= survey.project.name%><br/>
+	<% end %>
+</div>
+<% end %>
+<% if @surveys && @surveys.any? %>
+<div class="autoscroll">
+	<table class="list attributes">
+		<thead>
+			<tr>
+				<th class="caption">Title</th>
+				<th class="caption">Start date</th>
+				<th>Expire date</th>
+				<th>Overview</th>
+				<th>Delete Own Answers</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% for survey in @surveys %>
+
+			<tr id="survey-<%= h(survey.id) %>" class="hascontextmenu <%= cycle('odd', 'even') %>">
+				<% if @published_surveys.include?(survey.survey) && survey.survey.start_date <= Date.current && Peer.find(:first, :conditions => {:project_id => @project, :survey_id => survey.survey, :user_id => User.current, :completed => false } ) != nil %>
+				<td><%= link_to survey.survey.title, fill_survey_path(survey.survey, project_id: @project) %></td>
+				<% else %>
+				<td><%= survey.survey.title %></td>
+				<% end %>
+				
+				<td><%= survey.survey.start_date.strftime("%d-%m-%Y") %></td>
+				<td><%= survey.survey.end_date.strftime("%d-%m-%Y") %></td>
+				<td class="id"><%= link_to '', survey_path(survey.survey, project_id: @project), :class => 'icon icon-issue' %></td>
+				<td class="id"><%= link_to '', selfdelete_survey_path(survey.survey, :project_id => @project), :class => 'icon icon-del', :confirm => "Are you sure you want to delete your own answers?" %></td>
+			</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>
+<% else %>
+<p class="nodata">There are currently no surveys to be filled in.</p>
+<% end %>

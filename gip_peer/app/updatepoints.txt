@@ -1,0 +1,13 @@
+New Survey:
+- Intro and outro should be text areas, maybe redmine rich text editor
+- Mark required fields
+- Show error for empty question and option
+- Add user to url so form is cleared if different users fill it in (probably also for all other forms)
+
+Index:
+- Put span on the table tops
+
+Publish survey:
+- Do not change the startdate when a survey is published
+
+- Voeg pry toe aan gems

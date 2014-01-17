@@ -1,0 +1,14 @@
+# English strings go here for Rails i18n
+# The gem validates_timeliness is using this file. Here we can declare the messages that will appear on screen when the validation is violated.
+en:
+  # my_label: "My label"
+  errors:
+    messages:
+      invalid_date: "is not a valid date"
+      invalid_time: "is not a valid time"
+      invalid_datetime: "is not a valid datetime"
+      is_at: "must be at %{restriction}"
+      before: "must be before %{restriction}"
+      on_or_before: "must be on or before %{restriction}"
+      after: "must be after %{restriction}"
+      on_or_after: "must be on or after %{restriction}"

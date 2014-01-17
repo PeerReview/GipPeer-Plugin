@@ -1,0 +1,70 @@
+<% content_for :header_tags do %>
+<%= javascript_include_tag :defaults, "nested_form" %>    
+<%= javascript_include_tag 'survey.js', plugin: 'gip_peer' %>
+<% end %>
+<h2>Editting survey</h2>
+
+<%= nested_form_for @survey, url: management_path(@survey, project_id: @project) do |f| %>
+  <%= render "shared/error_messages", target: @survey %>
+  <p>
+    <%= f.label :title, "Title" %><br/>
+    <%= f.text_field :title %>
+  </p>
+  <p>
+    <%= f.label :start_date, "Start date" %><br/>
+    <%= f.text_field :start_date, value: (@survey.start_date.blank? ? '' : @survey.start_date.strftime('%d-%m-%Y')) %>
+  </p>
+
+  <p>
+    <%= f.label :end_date, "End date (Deadline)" %><br/>
+    <%= f.text_field :end_date, value: (@survey.end_date.blank? ? '' : @survey.end_date.strftime('%d-%m-%Y')) %>
+  </p>
+
+  <p>
+    <%= f.label :introduction, "Introduction" %><br/>
+    <%= f.text_field :introduction %>
+  </p>
+
+  <p>
+    <%= f.label :outroduction, "Outroduction" %><br/>
+    <%= f.text_field :outroduction %>
+  </p>
+
+  <%= f.fields_for :questions %>
+  <p>
+    <%= f.link_to_add "Add a question", :questions %>
+  </p>
+  <table class="list attributes">
+      <% @projects.each do |p| %>
+    <% if (!p.users.empty?) %>
+      <tr id="project-<%= h(p.id) %>" class="hascontextmenu <%= cycle('odd', 'even') %>">
+        <td class="userlist id">
+         <%= check_box_tag("project",p.id, false, :onclick => "javascript:selectAll('.up_#{p.id}',this.checked);") %>
+        </td>
+        <td class="userlist" colspan="2"><a href="#" onClick="javascript:$('.projects_<%= p.id.to_i %>').toggle('blind');"><%= p.name %></a>
+        </td>
+      </tr>
+      <% p.users.each do |u| %>
+        <tr style="display:none;" class="projects_<%= p.id %>">
+          <td class="userlist"></td>
+          <td class="userlist id">
+           <%= hidden_field_tag("peers[#{p.id}][#{u.id}][]", 0)%>
+            <% if(@peers.include?({:project_id => p.id, :user_id => u.id })) %>
+               <%= check_box_tag("peers[#{p.id}][#{u.id}][]",1,true,:class => "up_#{p.id}") %>
+            <% else %>
+              <%= check_box_tag("peers[#{p.id}][#{u.id}][]",1,false,:class => "up_#{p.id}") %>
+            <% end %>
+          <td class="userlist"><%= u.name %></td></tr>
+      <% end %>
+      <% end %>
+    <% end %>
+  </table>
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>
+
+<p>
+	<%= link_to "Show", management_path(@survey, project_id: @project) %>|
+	<%= link_to 'Back', surveys_path(project_id: @project) %>
+</p>

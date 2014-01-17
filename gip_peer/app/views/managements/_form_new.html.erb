@@ -1,0 +1,42 @@
+<%= javascript_include_tag "nested_form" %>
+<%= nested_form_for @survey, :url => {:action => "edit", :project_id => @project.identifier} do |f| %>
+  <%= render "shared/error_messages", :target => @survey %>
+  <p>
+    <%= f.label :title, "Title" %><br/>
+    <%= f.text_field :title %>
+  </p>
+
+  <p>
+    <%= f.label :start_date, "Start date" %><br/>
+    <%= f.text_field :start_date %>
+  </p>
+
+  <p>
+    <%= f.label :end_date, "End date (Deadline)" %><br/>
+    <%= f.text_field :end_date %>
+  </p>
+
+  <p>
+    <%= f.label :introduction, "Introduction" %><br/>
+    <%= f.text_field :introduction %>
+  </p>
+
+  <p>
+    <%= f.label :outroduction, "Outroduction" %><br/>
+    <%= f.text_field :outroduction %>
+  </p>
+
+<p>
+ <%= f.fields_for :questions do |builder| %>
+    <%= render "question_fields", :f => builder %>
+  <% end %>
+</p>
+ 
+  <p>
+    <%= f.link_to_add "Add a question", :questions %>
+  </p>
+
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>

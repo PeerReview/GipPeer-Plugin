@@ -1,0 +1,11 @@
+= gip_peer
+ 
+Peer Reviewing plugin for Redmine. Created by 4 students at the Radboud University in Nijmegen. It is created during a semester with no ruby rails experience.
+
+The following setup was used
+
+Environment:
+  Redmine version                2.3.3.devel
+  Ruby version                   1.9.3-p484 (2013-11-22) [i686-linux]
+  Rails version                  3.2.13
+  Database adapter               PostgreSQL
